@@ -1,0 +1,23 @@
+Path:
+  Name: "/pnfs/icarus/persistent/users/mueller/NoiseStudies/"
+  RecoFolder: "Events"
+  DAQName_Raw: "raw::RawDigits_daqTPC_RAW_decode."
+  DAQName_Uncor: "raw::RawDigits_daqTPC__decode."
+  images: "/icarus/app/users/mueller/NoiseStudies_v08_59_00/workdir/test/"
+Analysis:
+  Events: 50
+Data:
+  EastRun: 1896
+  WestRun: 1894
+  BuildMap: false
+  EastMapName: "EastMap"
+  WestMapName: "WestMap"
+SVGHeatmap:
+  SVGBase: "SVGBase"
+  Gradient: "YlOrBr"
+  ZMin: 0
+  ZMax: 10000
+  EmptyColor: "255,255,255"
+Miscellaneous:
+  LogName: "NoiseDebug.log"
+  LogPath: "./debug/"

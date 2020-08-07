@@ -87,20 +87,20 @@ def MeanPower(Power, Map, MiniCrate):
     # mini-crate.
     return Spectrum
 
-def PeakFind(Frequency, PowerRaw, PowerUncor, Frame, MiniCrate):
+def PeakFind(Frequency, Power, fLow=1, fHigh=800):
     # This function calculates the frequency (kHz) and height of the peak in the power
-    # spectrum in the range of 100 to 130 kHz. This is a particularly interesting
-    # region because the peak is so pervasive...
+    # spectrum in the range of fLow to FHigh kHz. 
     
     # First we create a boolean mask to hone in on the frequency region of interest.
-    # We then get the mean power spectrum for the requested mini-crate, apply the
-    # range mask, and locate the max height of the spectrum in the region of interest.
-    RangeMask = [ True if x < 130 and x > 100 else False for x in 1000*Frequency]
-    PowerRaw_Selected = MeanPower(PowerRaw, Frame, MiniCrate)[RangeMask]
-    ArgMax = np.argmax(PowerRaw_Selected)
+    # We then apply the range mask and locate the max height of the spectrum in the
+    # region of interest.
+    RangeMask = [ True if x < fHigh and x > fLow else False for x in 1000*Frequency]
+    Power_Selected = Power[RangeMask]
+    ArgMax = np.argmax(Power_Selected)
     PeakFrequency = 1000*Frequency[RangeMask][ArgMax]
-    PeakPower = PowerRaw_Selected[ArgMax]
+    PeakPower = Power_Selected[ArgMax]
+    GlobalArgMax = np.argwhere(Power == PeakPower)[0,0]
     
     # The frequency at which the power spectrum is maximum as well as the peak power
     # are returned.
-    return PeakFrequency, PeakPower
+    return PeakFrequency, PeakPower, GlobalArgMax

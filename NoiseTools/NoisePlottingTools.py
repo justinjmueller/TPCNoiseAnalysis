@@ -118,6 +118,7 @@ def PlotWithBackgroundSeparation(Frequency, Power, Background, MiniCrate, Path, 
     Figure.set_tight_layout(True)
 
     # And finally save the plot for possible later examination.
+    ax1.set
     Figure.savefig(Path + 'BGSep_Lin_' + MiniCrate + Suffix + '.png')
     ax1.set_yscale('log')
     ax1.set(ylim=(0.1,10000))

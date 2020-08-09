@@ -52,7 +52,7 @@ def Decode(Run):
     logging.debug('[ Decode() ]: Matching glob for run: ' + str(MatchingFiles))
     if len(MatchingFiles) < 1:
         logging.debug('[ Decode() ]: No decoded file found for run. Begin decode job.')
-        os.system('lar -c /icarus/app/users/mueller/NoiseStudies_v08_59_00/workdir/decoder.fcl -n 50 ' + ToProcess[0])
+        os.system('lar -c decoder.fcl -n 50 ' + ToProcess[0])
         os.system('rm Supplemental*.root')
     
     # We want to double check that the decoder job was successful. If we find a decoded file,

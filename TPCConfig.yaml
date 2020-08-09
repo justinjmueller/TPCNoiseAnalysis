@@ -1,0 +1,43 @@
+Path:
+  Name: "/pnfs/icarus/persistent/users/mueller/NoiseStudies/"
+  RecoFolder: "Events"
+  DAQName_Raw: "raw::RawDigits_daqTPC_RAW_decode."
+  DAQName_Uncor: "raw::RawDigits_daqTPC__decode."
+  Images: "/icarus/app/users/mueller/AnalysisChain/workdir/TPCNoiseAnalysis/FullTPC/"
+Analysis:
+  Events: 50
+  fLow: 100
+  fHigh: 130
+Data:
+  Runs:
+#    1975: "EastMap"
+    2057: "EEMap"
+    2058: "EWMap"
+    2030: "WWMap"
+    2024: "WEMap"
+  AnalyzedRuns: []
+  MaskedCrates:
+    
+SVGHeatmap:
+  Columns: 
+    - "fPow"
+    - "fPowSep"
+    - "fRatio"
+  SVGBase: "SVGBase"
+  Gradient: "summer_r"
+  BarLabel:
+    - "Power"
+    - "Power (Background Removed)"
+    - "Ratio"
+  ZMin:
+    - 0
+    - 0
+    - 0
+  ZMax:
+    - 10000
+    - 10000
+    - 25
+  EmptyColor: "255,255,255"
+Miscellaneous:
+  LogName: "NoiseDebug.log"
+  LogPath: "./debug/"

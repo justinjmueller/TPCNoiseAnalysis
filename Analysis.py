@@ -120,6 +120,10 @@ def main():
         Power = Analyze(Events, cfg, Run)
         FullPower = FullPower.append(Power)
         Power.to_csv(cfg['Path']['Images']+'Run'+str(Run)+'Power.csv', index=False)
+
+    for Run in cfg['Data']['AnalyzedRuns']:
+        Power = pd.read_csv(cfg['Path']['Images']+'Run'+str(Run)+'Power.csv')
+        FullPower = FullPower.append(Power)
     FullPower.to_csv('FullPower.csv', index=False)
 
     #ProcessWE = False

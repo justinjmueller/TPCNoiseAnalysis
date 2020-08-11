@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
+from numba import njit
 
-
+@njit
 def BackgroundSNIPCalc(Power, nIterations=20, ApplyLLS=False, ProtectRange=100, ProtectIterations=5):
     # This function takes an input power spectrum and attempts to calculate the background
     # (i.e. everything that is 'smooth' and not a peak). This is done following the 1D

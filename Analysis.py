@@ -12,10 +12,13 @@ from os import path
 sys.path.insert(0, './NoiseTools/')
 from RawDigits import RawDigit
 from NoiseCalcTools import RMSCalc, PowerCalc, MeanPower, PeakFind
-from NoiseHelperTools import SigintHandler, ReturnConfig, Decode
+from NoiseHelperTools import SigintHandler, ReturnConfig#, Decode
 from NoisePlottingTools import PlotRMS, PlotPower, PlotPowerAsHeatmap, PlotWithBackgroundSeparation
 from SpectraTools import BackgroundSNIPCalc
 from DatabaseTools import BuildMapDataFrame
+
+def Decode(File):
+    return None
 
 def Analyze(Events, cfg, Run):
     #Gather data and channel map
@@ -114,7 +117,11 @@ def main():
     FullPower = pd.DataFrame()
     for Run in cfg['Data']['Runs']:
         Map = cfg['Data']['Runs'][Run]
-        FileToProcess = Decode(str(Run))
+        FileToProcess = None
+        if cfg['Analysis']['FromFile']:
+            FileToProcess = cfg['Data']['Files'][Run]
+        else:
+            FileToProcess = Decode(str(Run))
         Data = uproot.open(FileToProcess)
         Events = Data[cfg['Path']['RecoFolder']]
         Power = Analyze(Events, cfg, Run)
@@ -125,34 +132,6 @@ def main():
         Power = pd.read_csv(cfg['Path']['Images']+'Run'+str(Run)+'Power.csv')
         FullPower = FullPower.append(Power)
     FullPower.to_csv('FullPower.csv', index=False)
-
-    #ProcessWE = False
-    #ProcessWW = False
-    #if cfg['Data']['Runs']['WERun'] != 0: ProcessWE = True
-    #if cfg['Data']['Runs']['WWRun'] != 0: ProcessWW = True
-    
-    #if ProcessWW:
-    #    WestFileToProcess = Decode(str(cfg['Data']['WestRun']))        
-    #    WestData = uproot.open(WestFileToProcess)
-    #    WestEvents = WestData[cfg['Path']['RecoFolder']]
-    #    WestPower = AnalyzeHalf(WestEvents, cfg, 'WW')
-    #    WestPower.to_csv(cfg['Path']['Images']+'Run'+str(cfg['Data']['Runs']['WestRun'])+'Power_WW.csv', index=False)
-
-    #if ProcessWE:
-    #    EastFileToProcess = Decode(str(cfg['Data']['EastRun']))
-    #    EastData = uproot.open(EastFileToProcess)
-    #    EastEvents = EastData[cfg['Path']['RecoFolder']]
-    #    EastPower = AnalyzeHalf(EastEvents, cfg, 'WE')
-    #    EastPower.to_csv(cfg['Path']['Images']+'Run'+str(cfg['Data']['Runs']['EastRun'])+'Power_WE.csv', index=False)
-
-    #if ProcessWE and ProcessWW:
-    #    PowerFrame = EastPower.append(WestPower)
-    #    print(PowerFrame)
-    #    PowerFrame.to_csv(cfg['Path']['Images']+'PowerFullAnalysis.csv', index=False)
-    #elif ProcessWE:
-    #    PowerFrame = EastPower
-    #elif ProcessWW:
-    #    PowerFrame = WestPower
 
     # Plot the power in a geographically relevant heatmap. The config field Columns
     # specifies a list of columns to produce a plot for, so we produce a plot for

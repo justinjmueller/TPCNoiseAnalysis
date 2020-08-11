@@ -2,8 +2,16 @@ import numpy as np
 import scipy.signal as signal
 import pandas as pd
 import logging
+from numba import njit, jit
 from RawDigits import RawDigit
 
+def RMSCalcOne(Waveforms):
+    Pedestals = np.median(Waveforms, axis=-1)
+    WaveLessPeds = Waveforms - Pedestals.reshape((Pedestals.shape)+(1,))
+    RMS = np.sqrt(np.mean(np.square(WaveLessPeds),axis=-1))
+    return RMS
+
+@jit(parallel=True)
 def RMSCalc(RawDigits, NumEvents=50):
     # This function calculates the RMS for each channel and returns an average over the
     # number of events. The RawDigits argument is an object which serves as an interface 
@@ -13,6 +21,7 @@ def RMSCalc(RawDigits, NumEvents=50):
     nTicks = RawDigits.NumTicks(0)                     # The number of ticks per waveform.
     nEvents = RawDigits.NumEvents()                    # The number of events in the file.
     RawWaveforms  = np.zeros((nChannels,nTicks))       # Empty array for raw digits.
+    RMS = np.zeros(nChannels)
 
     # Unfortunately it is not possible to do this all at once since there are up to
     # 55,000 channels and each waveform is 4096 ticks long. This means we need to
@@ -27,11 +36,13 @@ def RMSCalc(RawDigits, NumEvents=50):
         if n % 10 == 0: print('Processing (RMS) event ' + str(n) + '...')
         # Each quantity is (nChannels,nTicks)
         Waveforms = RawDigits.GetWaveforms(n)
-        Pedestals = np.median(Waveforms, axis=-1)
-        WaveLessPeds = Waveforms - Pedestals.reshape((Pedestals.shape)+(1,))
-        RawWaveforms[:,:] += np.square(WaveLessPeds)
-    RawWaveforms /= N 
-    RMS = np.sqrt(np.mean(RawWaveforms,axis=-1))
+        #Pedestals = np.median(Waveforms, axis=-1)
+        #WaveLessPeds = Waveforms - Pedestals.reshape((Pedestals.shape)+(1,))
+        #RawWaveforms[:,:] += np.square(WaveLessPeds)
+        RMS += RMSCalcOne(Waveforms)
+    #RawWaveforms /= N
+    RMS /= N
+    #RMS = np.sqrt(np.mean(RawWaveforms,axis=-1))
   
     # Now we return RMS, which is a 1D numpy array of length nChannels containing the
     # RMS value for each channel.
